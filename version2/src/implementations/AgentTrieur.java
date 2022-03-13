@@ -1,10 +1,7 @@
 package implementations;
 
 import abstractions.Agent;
-import implementations.actions.ActionDeplacer;
-import implementations.actions.ActionPoser;
-import implementations.actions.ActionPrendre;
-import implementations.actions.ActionTrieur;
+import implementations.actions.*;
 
 import java.util.List;
 import java.util.Random;
@@ -21,14 +18,18 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
     private final double kPlus;
     private final double kMoins;
     private final double tauxErreur;
+    private final double forceSignal;
+    private final int distanceSignal;
+    private final int attenteMax;
 
     private final List<String> memoire;
     private final int tailleMemoire;
 
     private Objet objetTenu;
+    private int attenteAide;
 
-    public AgentTrieur(EnvironnementGrille environnement, int pas, int tailleMemoire,
-                       double kPlus, double kMoins, double tauxErreur) {
+    public AgentTrieur(EnvironnementGrille environnement, int pas, int tailleMemoire, double kPlus, double kMoins,
+                       double tauxErreur, double forceSignal, int distanceSignal, int attenteMax) {
         super(environnement);
         this.pas = pas;
         this.tailleMemoire = tailleMemoire;
@@ -38,11 +39,16 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
         this.kPlus = kPlus;
         this.kMoins = kMoins;
         this.tauxErreur = tauxErreur;
+        this.forceSignal = forceSignal;
+        this.distanceSignal = distanceSignal;
+        this.attenteMax = attenteMax;
     }
 
     public void memoriser(Objet objet) {
         this.getMemoire().add(objet != null ? objet.toString() : MEMOIRE_OBJET_PAR_DEFAUT);
+        // Si l'agent n'a plus de place dans sa mémoire
         if (this.getMemoire().size() > this.getTailleMemoire()) {
+            // On enlève l'objet retenu le plus ancien
             this.getMemoire().remove(0);
         }
     }
@@ -70,7 +76,7 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
                 double f = calculerF(objetPresent);
                 double pPrise = pow(getkPlus() / (getkPlus() + f), 2);
 
-                // On essaye de prendre l'objet
+                // On teste si l'agent peut prendre l'objet
                 if (random.nextDouble() < pPrise) {
                     this.getEnvironnement().realisationAction(this, new ActionPrendre());
                     return;
@@ -82,23 +88,41 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
                 double f = calculerF(objetTenu);
                 double pDepot = pow(f / (getkMoins() + f), 2);
 
-                // On essaye de poser l'objet
-                if (random.nextDouble() < pDepot) {
+                // On teste si l'agent peut poser l'objet, ou on le pose de force si l'agent a trop attendu
+                if (random.nextDouble() < pDepot || this.getAttenteAide() >= this.getAttenteMax()) {
+                    this.resetAttente();
                     this.getEnvironnement().realisationAction(this, new ActionPoser());
                     return;
                 }
             }
         }
 
-        // Sinon si on n'a pas réussi à prendre ou poser un objet, on se déplace sur une case voisine sans agent
-        List<CaseGrille> casesVoisinesLibres = perception.getCasesVoisines().stream()
-                .filter(caseGrille -> caseGrille.getAgent() == null)
-                .collect(toList());
+        // Sinon on va tenter de se déplacer sur une case voisine
+        List<CaseGrille> casesVoisinesCibles = perception.getCasesVoisines();
 
-        if (!casesVoisinesLibres.isEmpty()) {
-            // La case est choisie aléatoirement
-            CaseGrille caseDestination = casesVoisinesLibres.get(random.nextInt(casesVoisinesLibres.size()));
+        // Dans le cas où l'agent ne porte pas d'objet
+        if (objetTenu == null) {
+            // Ce dernier est attiré par la case voisine ayant le plus de phéromones
+            double pheromonesMax = casesVoisinesCibles.stream()
+                    .mapToDouble(CaseGrille::getPheromones)
+                    .max()
+                    .orElseThrow();
+
+            casesVoisinesCibles = casesVoisinesCibles.stream()
+                    .filter(caseGrille -> caseGrille.getPheromones() == pheromonesMax)
+                    .collect(toList());
+        } else if (objetTenu.isLourd() && perception.getCaseCourante().getAgents().size() < 2) {
+            // Sinon si l'objet tenu est lourd et que l'agent est seul, l'agent attend et émet des phéromones
+            this.incrementerAttente();
+            this.getEnvironnement().realisationAction(this, new ActionPheromones());
+            return;
+        }
+
+        // On choisit aléatoirement la case sur laquelle se déplacer
+        if (!casesVoisinesCibles.isEmpty()) {
+            CaseGrille caseDestination = casesVoisinesCibles.get(random.nextInt(casesVoisinesCibles.size()));
             this.getEnvironnement().realisationAction(this, new ActionDeplacer(caseDestination));
+            this.resetAttente();
         }
     }
 
@@ -111,7 +135,15 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
         long nombresObjetsNonCibles = this.getMemoire().stream()
                 .filter(objet -> !objet.equals(typeObjet) && !objet.equals(MEMOIRE_OBJET_PAR_DEFAUT))
                 .count();
-        return (nombresObjetsCibles + tauxErreur*nombresObjetsNonCibles) / (double) this.getTailleMemoire();
+        return (nombresObjetsCibles + this.getTauxErreur()*nombresObjetsNonCibles) / (double) this.getTailleMemoire();
+    }
+
+    public void incrementerAttente() {
+        this.attenteAide++;
+    }
+
+    public void resetAttente() {
+        this.attenteAide = 0;
     }
 
     @Override
@@ -145,5 +177,25 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
 
     public double getkMoins() {
         return kMoins;
+    }
+
+    public double getTauxErreur() {
+        return tauxErreur;
+    }
+
+    public double getForceSignal() {
+        return forceSignal;
+    }
+
+    public int getDistanceSignal() {
+        return distanceSignal;
+    }
+
+    public int getAttenteAide() {
+        return attenteAide;
+    }
+
+    public int getAttenteMax() {
+        return attenteMax;
     }
 }

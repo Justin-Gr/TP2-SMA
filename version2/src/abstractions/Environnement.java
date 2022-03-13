@@ -3,7 +3,7 @@ package abstractions;
 import java.util.List;
 
 public abstract class Environnement<E extends Environnement<E, A, P, X>, A extends Agent<E, A, P, X>, P extends Perception, X extends Action<E, A, P, X>> {
-    private final List<A> agents;
+    protected final List<A> agents;
 
     public Environnement(List<A> agents) {
         this.agents = agents;

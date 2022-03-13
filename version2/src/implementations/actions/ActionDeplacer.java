@@ -16,9 +16,15 @@ public class ActionDeplacer extends ActionTrieur {
     public void effectuer(EnvironnementGrille environnement, AgentTrieur agent) {
         CaseGrille caseCourante = environnement.caseCouranteAgent(agent);
 
-        if (caseDestination.getAgent() == null) {
-            caseDestination.setAgent(agent);
-            caseCourante.setAgent(null);
+        if (agent.getObjetTenu() != null) {
+            // Si l'agent porte un objet lourd et qu'il est seul sur la case, il ne peut pas se déplacer
+            if (agent.getObjetTenu().isLourd() && caseCourante.getAgents().size() < 2) {
+                return;
+            }
         }
+
+        // Déplacement de l'agent
+        caseDestination.addAgent(agent);
+        caseCourante.removeAgent(agent);
     }
 }

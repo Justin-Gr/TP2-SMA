@@ -11,9 +11,10 @@ public class Main {
         int N = 50;
         int M = 50;
 
-        Map<Objet, Integer> nombreObjetsParType = new HashMap<>();
-        nombreObjetsParType.put(Objet.A, 200);
-        nombreObjetsParType.put(Objet.B, 200);
+        Map<Objet, Integer> nombreObjetsParType = new HashMap<>() {{
+            put(Objet.A, 200);
+            put(Objet.B, 200);
+        }};
 
         int nombreAgents = 20;
         int pas = 1;
