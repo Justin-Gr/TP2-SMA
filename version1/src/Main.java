@@ -1,13 +1,19 @@
 import implementations.AgentTrieur;
 import implementations.EnvironnementGrille;
+import implementations.Objet;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
         int N = 50;
         int M = 50;
-        int nombreObjetsA = 200;
-        int nombreObjetsB = 200;
+
+        Map<Objet, Integer> nombreObjetsParType = new HashMap<>();
+        nombreObjetsParType.put(Objet.A, 200);
+        nombreObjetsParType.put(Objet.B, 200);
 
         int nombreAgents = 20;
         int pas = 1;
@@ -18,7 +24,7 @@ public class Main {
 
         int nombreIterations = 100000;
 
-        EnvironnementGrille environnement = new EnvironnementGrille(N, M, nombreObjetsA, nombreObjetsB);
+        EnvironnementGrille environnement = new EnvironnementGrille(N, M, nombreObjetsParType);
 
         for (int i = 0; i < nombreAgents; i++) {
             AgentTrieur agent = new AgentTrieur(environnement, pas, tailleMemoire, kPlus, kMoins, tauxErreur);

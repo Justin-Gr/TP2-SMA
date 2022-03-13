@@ -5,6 +5,7 @@ import implementations.actions.ActionTrieur;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class EnvironnementGrille extends Environnement<EnvironnementGrille, AgentTrieur, PerceptionTrieur, ActionTrieur> {
@@ -16,7 +17,7 @@ public class EnvironnementGrille extends Environnement<EnvironnementGrille, Agen
 
     private final CaseGrille[][] cases;
 
-    public EnvironnementGrille(int N, int M, int nombreObjetsA, int nombreObjetsB) {
+    public EnvironnementGrille(int N, int M, Map<Objet, Integer> nombreObjetsParType) {
         super(new ArrayList<>());
         this.random = new Random();
 
@@ -30,24 +31,17 @@ public class EnvironnementGrille extends Environnement<EnvironnementGrille, Agen
             }
         }
 
-        int x, y;
-        for (int i = 0; i < nombreObjetsA; i++) {
-            do {
-                x = random.nextInt(M);
-                y = random.nextInt(N);
-            } while(getCase(x, y).getObjet() != null);
+        nombreObjetsParType.forEach((objet, nombreObjets) -> {
+            int x, y;
+            for (int i = 0; i < nombreObjets; i++) {
+                do {
+                    x = random.nextInt(M);
+                    y = random.nextInt(N);
+                } while(getCase(x, y).getObjet() != null);
 
-            getCase(x, y).setObjet(Objet.A);
-        }
-
-        for (int i = 0; i < nombreObjetsB; i++) {
-            do {
-                x = random.nextInt(M);
-                y = random.nextInt(N);
-            } while(getCase(x, y).getObjet() != null);
-
-            getCase(x, y).setObjet(Objet.B);
-        }
+                getCase(x, y).setObjet(objet);
+            }
+        });
     }
 
     @Override
