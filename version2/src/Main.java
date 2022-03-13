@@ -14,13 +14,14 @@ public class Main {
         int tailleMemoire = 20;
         double kPlus = 0.1;
         double kMoins = 0.3;
+        double tauxErreur = 0.0;
 
         int nombreIterations = 100000;
 
         EnvironnementGrille environnement = new EnvironnementGrille(N, M, nombreObjetsA, nombreObjetsB);
 
         for (int i = 0; i < nombreAgents; i++) {
-            AgentTrieur agent = new AgentTrieur(environnement, pas, tailleMemoire, kPlus, kMoins);
+            AgentTrieur agent = new AgentTrieur(environnement, pas, tailleMemoire, kPlus, kMoins, tauxErreur);
             environnement.ajouterAgent(agent);
         }
 

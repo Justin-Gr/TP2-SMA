@@ -15,28 +15,33 @@ import static java.util.stream.Stream.generate;
 
 public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, PerceptionTrieur, ActionTrieur> {
 
+    private final static String MEMOIRE_OBJET_PAR_DEFAUT = "0";
+
     private final int pas;
     private final double kPlus;
     private final double kMoins;
+    private final double tauxErreur;
 
     private final List<String> memoire;
     private final int tailleMemoire;
 
     private Objet objetTenu;
 
-    public AgentTrieur(EnvironnementGrille environnement, int pas, int tailleMemoire, double kPlus, double kMoins) {
+    public AgentTrieur(EnvironnementGrille environnement, int pas, int tailleMemoire,
+                       double kPlus, double kMoins, double tauxErreur) {
         super(environnement);
         this.pas = pas;
         this.tailleMemoire = tailleMemoire;
-        this.memoire = generate(() -> "0")
+        this.memoire = generate(() -> MEMOIRE_OBJET_PAR_DEFAUT)
                 .limit(this.tailleMemoire)
                 .collect(toList());
         this.kPlus = kPlus;
         this.kMoins = kMoins;
+        this.tauxErreur = tauxErreur;
     }
 
     public void memoriser(Objet objet) {
-        this.getMemoire().add(objet != null ? objet.toString() : "0");
+        this.getMemoire().add(objet != null ? objet.toString() : MEMOIRE_OBJET_PAR_DEFAUT);
         if (this.getMemoire().size() > this.getTailleMemoire()) {
             this.getMemoire().remove(0);
         }
@@ -97,13 +102,16 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
         }
     }
 
-    public double calculerF(Objet objetPresent) {
-        String typeObjet = objetPresent.toString();
+    public double calculerF(Objet objetCible) {
+        String typeObjet = objetCible.toString();
 
         long nombresObjetsCibles = this.getMemoire().stream()
                 .filter(objet -> objet.equals(typeObjet))
                 .count();
-        return (double) nombresObjetsCibles / this.getTailleMemoire();
+        long nombresObjetsNonCibles = this.getMemoire().stream()
+                .filter(objet -> !objet.equals(typeObjet) && !objet.equals(MEMOIRE_OBJET_PAR_DEFAUT))
+                .count();
+        return (nombresObjetsCibles + tauxErreur*nombresObjetsNonCibles) / (double) this.getTailleMemoire();
     }
 
     @Override
