@@ -12,7 +12,7 @@ import static java.util.stream.Stream.generate;
 
 public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, PerceptionTrieur, ActionTrieur> {
 
-    private final static String MEMOIRE_OBJET_PAR_DEFAUT = "0";
+    private final static String MEMOIRE_CASE_SANS_OBJET = "0";
 
     private final int pas;
     private final double kPlus;
@@ -33,7 +33,7 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
         super(environnement);
         this.pas = pas;
         this.tailleMemoire = tailleMemoire;
-        this.memoire = generate(() -> MEMOIRE_OBJET_PAR_DEFAUT)
+        this.memoire = generate(() -> MEMOIRE_CASE_SANS_OBJET)
                 .limit(this.tailleMemoire)
                 .collect(toList());
         this.kPlus = kPlus;
@@ -45,7 +45,7 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
     }
 
     public void memoriser(Objet objet) {
-        this.getMemoire().add(objet != null ? objet.toString() : MEMOIRE_OBJET_PAR_DEFAUT);
+        this.getMemoire().add(objet != null ? objet.toString() : MEMOIRE_CASE_SANS_OBJET);
         // Si l'agent n'a plus de place dans sa mémoire
         if (this.getMemoire().size() > this.getTailleMemoire()) {
             // On enlève l'objet retenu le plus ancien
@@ -133,7 +133,7 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
                 .filter(objet -> objet.equals(typeObjet))
                 .count();
         long nombresObjetsNonCibles = this.getMemoire().stream()
-                .filter(objet -> !objet.equals(typeObjet) && !objet.equals(MEMOIRE_OBJET_PAR_DEFAUT))
+                .filter(objet -> !objet.equals(typeObjet) && !objet.equals(MEMOIRE_CASE_SANS_OBJET))
                 .count();
         return (nombresObjetsCibles + this.getTauxErreur()*nombresObjetsNonCibles) / (double) this.getTailleMemoire();
     }

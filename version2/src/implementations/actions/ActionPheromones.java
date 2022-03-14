@@ -20,7 +20,7 @@ public class ActionPheromones extends ActionTrieur {
 
         // Les phéromones sont émis dans un carré autour de l'agent
         int longueur = dS*2 + 1;
-        for (int i = -longueur/2; i <= longueur/2; i++) { // les divisions d'entiers sont volontaires
+        for (int i = -longueur/2; i <= longueur/2; i++) { // les divisions entières sont volontaires
             for (int j = -longueur/2; j <= longueur/2; j++) {
                 CaseGrille caseGrille = environnement.getCase(x + j, y + i);
                 if (caseGrille != null) {

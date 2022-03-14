@@ -8,11 +8,11 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) {
-        int N = 25;
+        int N = 50;
         int M = 50;
-        int nA = 100;
-        int nB = 100;
-        int nC = 100;
+        int nA = 200;
+        int nB = 200;
+        int nC = 200;
         double constanteEvaporation = 0.5;
 
         Map<Objet, Integer> nombreObjetsParType = new HashMap<>() {{
@@ -23,7 +23,7 @@ public class Main {
 
         int nombreAgents = 20;
         int pas = 1;
-        int tailleMemoire = 20;
+        int tailleMemoire = 10;
         double kPlus = 0.1;
         double kMoins = 0.3;
         double tauxErreur = 0.0;

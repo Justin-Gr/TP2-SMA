@@ -8,7 +8,7 @@ public abstract class Agent<E extends Environnement<E, A, P, X>, A extends Agent
         this.environnement = environnement;
     }
 
-    public void jouer() {
+    final public void jouer() {
         P perception = this.percevoir();
         this.realiserAction(perception);
     }

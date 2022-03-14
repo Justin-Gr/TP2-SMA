@@ -148,7 +148,7 @@ public class EnvironnementGrille extends Environnement<EnvironnementGrille, Agen
                 } else if (caseGrille.getObjet() != null) {
                     stringBuilder.append(" ").append(caseGrille.getObjet()).append(" ");
                 } else if (caseGrille.getPheromones() > 0) {
-                    stringBuilder.append(" ").append(".").append(" ");
+                    stringBuilder.append(" . ");
 //                    stringBuilder.append(" ").append((int) caseGrille.getPheromones()).append(" ");
                 } else {
                     stringBuilder.append("   ");
