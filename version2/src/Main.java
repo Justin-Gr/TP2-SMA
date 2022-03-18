@@ -8,6 +8,8 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) {
+        //==============================VARIABLES ENVIRONNEMENT==============================
+
         int N = 50;
         int M = 50;
         int nA = 200;
@@ -21,15 +23,19 @@ public class Main {
             put(Objet.C, nC);
         }};
 
+        //==============================VARIABLES AGENTS==============================
+
         int nombreAgents = 20;
         int pas = 1;
-        int tailleMemoire = 10;
+        int tailleMemoire = 20;
         double kPlus = 0.1;
         double kMoins = 0.3;
         double tauxErreur = 0.0;
         double forceSignal = 4;
         int distanceSignal = 2;
         int attenteMax = 10;
+
+        //==============================INIT SIMULATION==============================
 
         int nombreIterations = 100000;
 
@@ -40,6 +46,8 @@ public class Main {
                     tauxErreur, forceSignal, distanceSignal, attenteMax);
             environnement.ajouterAgent(agent);
         }
+
+        //==============================LANCEMENT SIMULATION==============================
 
         System.out.println("Début de la simulation\n");
         System.out.println(environnement);

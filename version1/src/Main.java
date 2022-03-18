@@ -8,6 +8,8 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) {
+        //==============================VARIABLES ENVIRONNEMENT==============================
+
         int N = 50;
         int M = 50;
 
@@ -16,12 +18,16 @@ public class Main {
             put(Objet.B, 200);
         }};
 
+        //==============================VARIABLES AGENTS==============================
+
         int nombreAgents = 20;
         int pas = 1;
-        int tailleMemoire = 20;
+        int tailleMemoire = 10;
         double kPlus = 0.1;
         double kMoins = 0.3;
-        double tauxErreur = 0.1;
+        double tauxErreur = 0.0;
+
+        //==============================INIT SIMULATION==============================
 
         int nombreIterations = 100000;
 
@@ -32,6 +38,8 @@ public class Main {
             environnement.ajouterAgent(agent);
         }
 
+        //==============================LANCEMENT SIMULATION==============================
+
         System.out.println("Début de la simulation\n");
         System.out.println(environnement);
 
@@ -40,11 +48,11 @@ public class Main {
 
             if (i % 10000 == 0) {
                 System.out.printf("Itération %s\n", i);
-                // System.out.printf("\n%s\n", environnement);
+                System.out.printf("\n%s\n", environnement);
             }
         }
 
-        System.out.printf("\n%s\n", environnement);
         System.out.println("Fin de la simulation");
+        System.out.printf("\n%s\n", environnement);
     }
 }

@@ -44,6 +44,11 @@ public class EnvironnementGrille extends Environnement<EnvironnementGrille, Agen
         });
     }
 
+    /**
+     * Permet d'ajouter un agent à l'environnement et de le positionner aléatoirement sur la grille
+     *
+     * @param agent l'agent à ajouter
+     */
     @Override
     public void ajouterAgent(AgentTrieur agent) {
         super.ajouterAgent(agent);
@@ -57,6 +62,12 @@ public class EnvironnementGrille extends Environnement<EnvironnementGrille, Agen
         getCase(x, y).setAgent(agent);
     }
 
+    /**
+     * Calcule la perception d'un agent
+     *
+     * @param agent l'agent dont on veut obtenir la perception
+     * @return la perception de l'agent
+     */
     @Override
     public PerceptionTrieur perception(AgentTrieur agent) {
         // Détermination de la case courante
@@ -89,6 +100,12 @@ public class EnvironnementGrille extends Environnement<EnvironnementGrille, Agen
         return new PerceptionTrieur(caseCourante, casesVoisines);
     }
 
+    /**
+     * Retourne la case où se situe l'agent passé en paramètre
+     *
+     * @param agent l'agent en question
+     * @return la case où se situe l'agent
+     */
     public CaseGrille caseCouranteAgent(AgentTrieur agent) {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
@@ -101,10 +118,24 @@ public class EnvironnementGrille extends Environnement<EnvironnementGrille, Agen
         return null;
     }
 
+    /**
+     * Indique si les coordonnées passées en paramètres correspondent à une case de la grille
+     *
+     * @param x la coordonnées en X
+     * @param y la coordonnées en Y
+     * @return true si une case est présente, false sinon
+     */
     public boolean casePresente(int x, int y) {
         return x >= 0 && x < M && y >= 0 && y < N;
     }
 
+    /**
+     * Retourne la case située aux coordonnées indiquées
+     *
+     * @param x la coordonnées en X
+     * @param y la coordonnées en Y
+     * @return la case correspondante
+     */
     public CaseGrille getCase(int x, int y) {
         return casePresente(x, y) ? cases[y][x] : null;
     }

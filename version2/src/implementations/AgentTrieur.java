@@ -44,6 +44,12 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
         this.attenteMax = attenteMax;
     }
 
+    /**
+     * Ajoute en mémoire l'objet passé en paramètre
+     * Si la mémoire est remplie, l'objet retenu le plus ancien est supprimé de la mémoire
+     *
+     * @param objet l'objet à mémoriser
+     */
     public void memoriser(Objet objet) {
         this.getMemoire().add(objet != null ? objet.toString() : MEMOIRE_CASE_SANS_OBJET);
         // Si l'agent n'a plus de place dans sa mémoire
@@ -53,6 +59,11 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
         }
     }
 
+    /**
+     * Demande à l'environnement la perception de l'agent
+     *
+     * @return la perception reçue
+     */
     @Override
     public PerceptionTrieur percevoir() {
         PerceptionTrieur perception = this.getEnvironnement().perception(this);
@@ -63,6 +74,11 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
         return perception;
     }
 
+    /**
+     * L'agent prend une décision pour réaliser une action en fonction de la perception donnée
+     *
+     * @param perception la perception à considérer
+     */
     @Override
     public void realiserAction(PerceptionTrieur perception) {
         Random random = new Random();
@@ -126,6 +142,13 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
         }
     }
 
+    /**
+     * Calcule F en fonction de l'objet cible donné.
+     * L'objet cible peut être l'objet que porte l'agent ou bien l'objet présent sur la case de l'agent
+     *
+     * @param objetCible l'objet à considérer pour calculer F
+     * @return la valeur de F
+     */
     public double calculerF(Objet objetCible) {
         String typeObjet = objetCible.toString();
 
@@ -138,17 +161,22 @@ public class AgentTrieur extends Agent<EnvironnementGrille, AgentTrieur, Percept
         return (nombresObjetsCibles + this.getTauxErreur()*nombresObjetsNonCibles) / (double) this.getTailleMemoire();
     }
 
+    /**
+     * Indique si l'agent est dans un état qui le satisfait
+     *
+     * @return true si l'agent est satisfait, false sinon
+     */
+    @Override
+    public boolean isSatisfait() {
+        return false;
+    }
+
     public void incrementerAttente() {
         this.attenteAide++;
     }
 
     public void resetAttente() {
         this.attenteAide = 0;
-    }
-
-    @Override
-    public boolean isSatisfait() {
-        return false;
     }
 
     public int getPas() {

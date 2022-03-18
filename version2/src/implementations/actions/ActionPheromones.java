@@ -9,6 +9,13 @@ import static java.lang.Math.max;
 
 public class ActionPheromones extends ActionTrieur {
 
+    /**
+     * Permet à l'agent de déposer des phéromones autour de lui
+     * La puissance des phéromones est atténuée avec la distance
+     *
+     * @param environnement l'environnement exécutant l'action
+     * @param agent l'agent qui a demandé l'action
+     */
     @Override
     public void effectuer(EnvironnementGrille environnement, AgentTrieur agent) {
         double S = agent.getForceSignal();

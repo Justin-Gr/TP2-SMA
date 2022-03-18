@@ -6,6 +6,13 @@ import implementations.EnvironnementGrille;
 
 public class ActionPoser extends ActionTrieur {
 
+    /**
+     * Permet à un agent de poser l'objet tenu sur sa case
+     * Ne fait rien si aucun objet n'est tenu
+     *
+     * @param environnement l'environnement exécutant l'action
+     * @param agent l'agent qui a demandé l'action
+     */
     @Override
     public void effectuer(EnvironnementGrille environnement, AgentTrieur agent) {
         CaseGrille caseCourante = environnement.caseCouranteAgent(agent);

@@ -49,6 +49,11 @@ public class EnvironnementGrille extends Environnement<EnvironnementGrille, Agen
         });
     }
 
+    /**
+     * Permet d'ajouter un agent à l'environnement et de le positionner aléatoirement sur la grille
+     *
+     * @param agent l'agent à ajouter
+     */
     @Override
     public void ajouterAgent(AgentTrieur agent) {
         super.ajouterAgent(agent);
@@ -62,12 +67,22 @@ public class EnvironnementGrille extends Environnement<EnvironnementGrille, Agen
         getCase(x, y).addAgent(agent);
     }
 
+    /**
+     * Permet de jouer une itération de la simulation, et évapore un certain montant des phéromones de la grille
+     * à chaque début d'itération
+     */
     @Override
     public void jouerIteration() {
         this.evaporerPheromones();
         super.agents.forEach(Agent::jouer);
     }
 
+    /**
+     * Calcule la perception d'un agent
+     *
+     * @param agent l'agent dont on veut obtenir la perception
+     * @return la perception de l'agent
+     */
     @Override
     public PerceptionTrieur perception(AgentTrieur agent) {
         // Détermination de la case courante
@@ -91,6 +106,9 @@ public class EnvironnementGrille extends Environnement<EnvironnementGrille, Agen
         return new PerceptionTrieur(caseCourante, casesVoisines);
     }
 
+    /**
+     * Évapore les phéromones déposés dans la grille d'un certain montant
+     */
     public void evaporerPheromones() {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
@@ -100,6 +118,12 @@ public class EnvironnementGrille extends Environnement<EnvironnementGrille, Agen
         }
     }
 
+    /**
+     * Retourne les coordonnées X et Y d'un agent dans la grille
+     *
+     * @param agent l'agent dont on veut obtenir les coordonnées
+     * @return les coordonnées de l'agent
+     */
     public int[] coordonneesAgent(AgentTrieur agent) {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
@@ -112,15 +136,35 @@ public class EnvironnementGrille extends Environnement<EnvironnementGrille, Agen
         return null;
     }
 
+    /**
+     * Retourne la case où se situe l'agent passé en paramètre
+     *
+     * @param agent l'agent en question
+     * @return la case où se situe l'agent
+     */
     public CaseGrille caseCouranteAgent(AgentTrieur agent) {
         int[] coordonneesAgent = this.coordonneesAgent(agent);
         return getCase(coordonneesAgent[0], coordonneesAgent[1]);
     }
 
+    /**
+     * Indique si les coordonnées passées en paramètres correspondent à une case de la grille
+     *
+     * @param x la coordonnées en X
+     * @param y la coordonnées en Y
+     * @return true si une case est présente, false sinon
+     */
     public boolean casePresente(int x, int y) {
         return x >= 0 && x < M && y >= 0 && y < N;
     }
 
+    /**
+     * Retourne la case située aux coordonnées indiquées
+     *
+     * @param x la coordonnées en X
+     * @param y la coordonnées en Y
+     * @return la case correspondante
+     */
     public CaseGrille getCase(int x, int y) {
         return casePresente(x, y) ? cases[y][x] : null;
     }
